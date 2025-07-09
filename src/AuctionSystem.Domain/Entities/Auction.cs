@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -10,11 +12,16 @@ namespace AuctionSystem.Domain.Entities
 {
     public class Auction : AuditableEntity
     {
-        public int Id { get; set; }
+        [Required]
+        [MaxLength(100)]
         public string Title { get; set; } = null!;
+
+        [Required]
         public string Description { get; set; } = null!;
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
+
+        [Column(TypeName = "decimal(18,2)")]
         public decimal StartPrice { get; set; }
         public int SellerId { get; set; }
         public User Seller { get; set; } = null!;
