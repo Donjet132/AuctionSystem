@@ -11,4 +11,10 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\AuctionSystem.Application\AuctionSystem.Application.csproj" />
+    <ProjectReference Include="..\AuctionSystem.Infrastructure\AuctionSystem.Infrastructure.csproj" />
+    <ProjectReference Include="..\AuctionSystem.Persistence\AuctionSystem.Persistence.csproj" />
+  </ItemGroup>
+
 </Project>
