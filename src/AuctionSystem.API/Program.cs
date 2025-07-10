@@ -1,4 +1,5 @@
 using AuctionSystem.Persistence;
+using AuctionSystem.Application;
 using Microsoft.EntityFrameworkCore;
 using MediatR;
 using System.Reflection;
@@ -14,13 +15,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddMediatR(cfg =>
-    cfg.RegisterServicesFromAssembly(typeof(AuctionSystem.Application.Users.Commands.RegisterUserCommand).Assembly));
-
-builder.Services.AddValidatorsFromAssembly(typeof(AuctionSystem.Application.Users.Commands.RegisterUserCommandValidator).Assembly);
-
-builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(AuctionSystem.Application.Common.Behaviors.ValidationBehavior<,>));
-
+builder.Services.AddPersistence();
+builder.Services.AddApplication();
 
 var app = builder.Build();
 
