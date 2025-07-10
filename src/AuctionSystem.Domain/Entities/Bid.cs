@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using AuctionSystem.Domain.Common;
+﻿using AuctionSystem.Domain.Common;
 
 namespace AuctionSystem.Domain.Entities
 {
@@ -9,8 +8,6 @@ namespace AuctionSystem.Domain.Entities
         public Auction Auction { get; set; } = null!;
         public int BidderId { get; set; }
         public User Bidder { get; set; } = null!;
-
-        [Column(TypeName = "decimal(18,2)")]
         public decimal Amount { get; set; }
     }
 }
