@@ -1,10 +1,9 @@
 using AuctionSystem.Persistence;
 using AuctionSystem.Application;
 using Microsoft.EntityFrameworkCore;
-using MediatR;
-using System.Reflection;
-using FluentValidation;
-using FluentValidation.AspNetCore;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +16,25 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 builder.Services.AddPersistence();
 builder.Services.AddApplication();
+
+var key = Encoding.ASCII.GetBytes(builder.Configuration["Jwt:SecretKey"]);
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(key),
+        ClockSkew = TimeSpan.Zero
+    };
+});
 
 var app = builder.Build();
 
