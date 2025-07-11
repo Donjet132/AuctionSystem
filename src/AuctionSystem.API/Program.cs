@@ -1,4 +1,5 @@
 using AuctionSystem.Persistence;
+using AuctionSystem.Infrastructure;
 using AuctionSystem.Application;
 using Microsoft.EntityFrameworkCore;
 using System.Text;
@@ -14,7 +15,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddPersistence();
+builder.Services.AddInfrastructure();
 builder.Services.AddApplication();
 
 var key = Encoding.ASCII.GetBytes(builder.Configuration["Jwt:SecretKey"]);

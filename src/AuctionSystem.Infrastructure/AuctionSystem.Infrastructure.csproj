@@ -3,6 +3,7 @@
   <ItemGroup>
     <ProjectReference Include="..\AuctionSystem.Application\AuctionSystem.Application.csproj" />
     <ProjectReference Include="..\AuctionSystem.Domain\AuctionSystem.Domain.csproj" />
+    <ProjectReference Include="..\AuctionSystem.Persistence\AuctionSystem.Persistence.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

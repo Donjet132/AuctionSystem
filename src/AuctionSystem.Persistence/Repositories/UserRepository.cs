@@ -37,5 +37,18 @@ namespace AuctionSystem.Persistence.Repositories
         {
             return await _context.Users.FirstOrDefaultAsync(u => u.Username == username, cancellationToken);
         }
+
+        public async Task<User?> GetUserByIdAsync(int userId, CancellationToken cancellationToken)
+        {
+            return await _context.Users
+                .FirstOrDefaultAsync(u => u.Id == userId, cancellationToken);
+        }
+
+        public async Task<bool> UpdateUserAsync(User user, CancellationToken cancellationToken)
+        {
+            _context.Users.Update(user);
+            var result = await _context.SaveChangesAsync(cancellationToken);
+            return result > 0;
+        }
     }
 }
