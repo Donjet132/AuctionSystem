@@ -18,7 +18,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddInfrastructure();
 builder.Services.AddApplication();
 
-var key = Encoding.ASCII.GetBytes(builder.Configuration["Jwt:SecretKey"]);
+var key = Encoding.ASCII.GetBytes(builder.Configuration["Jwt:SecretKey"]!);
 
 builder.Services.AddAuthentication(options =>
 {
