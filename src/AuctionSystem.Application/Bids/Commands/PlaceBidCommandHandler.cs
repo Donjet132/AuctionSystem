@@ -26,6 +26,9 @@ namespace AuctionSystem.Application.Bids.Commands
             if (auction == null)
                 throw new Exception("Auction not found.");
 
+            if (auction.SellerId == request.BidderId)
+                throw new UnauthorizedAccessException("You cannot bid on your own auction.");
+
             if (auction.EndDate <= DateTime.UtcNow)
                 throw new Exception("Auction has already ended.");
 
