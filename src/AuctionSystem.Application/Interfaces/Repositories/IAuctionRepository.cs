@@ -8,5 +8,6 @@ namespace AuctionSystem.Application.Interfaces.Repositories
         Task<List<Auction>> GetAllAuctionsAsync(CancellationToken cancellationToken);
         Task<int> CreateAuctionAsync(Auction auction, CancellationToken cancellationToken);
         Task<bool> UpdateAuctionAsync(Auction auction, CancellationToken cancellationToken);
+        Task<bool> DeleteAuctionAsync(int id, CancellationToken cancellationToken);
     }
 }
