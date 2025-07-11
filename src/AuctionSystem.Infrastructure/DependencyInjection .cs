@@ -12,6 +12,7 @@ namespace AuctionSystem.Infrastructure
         {
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IAuctionRepository, AuctionRepository>();
+            services.AddScoped<IBidRepository, BidRepository>();
             services.AddScoped<IJwtTokenService, JwtTokenService>();
 
             return services;
