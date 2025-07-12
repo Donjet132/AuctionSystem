@@ -45,6 +45,7 @@ namespace AuctionSystem.API.Controllers
                  command.SellerId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
 
                 var id = await _mediator.Send(command);
+                AuctionPayoutService.RescheduleSignal.Set();
                 return CreatedAtAction(nameof(GetById), new { id }, new { id });
             }
             catch (Exception ex)
@@ -68,6 +69,7 @@ namespace AuctionSystem.API.Controllers
                 if (!result)
                     return NotFound();
 
+                AuctionPayoutService.RescheduleSignal.Set();
                 return NoContent();
             }
             catch (Exception ex)

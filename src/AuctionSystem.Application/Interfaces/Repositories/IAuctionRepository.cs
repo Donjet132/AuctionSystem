@@ -9,5 +9,7 @@ namespace AuctionSystem.Application.Interfaces.Repositories
         Task<int> CreateAuctionAsync(Auction auction, CancellationToken cancellationToken);
         Task<bool> UpdateAuctionAsync(Auction auction, CancellationToken cancellationToken);
         Task<bool> DeleteAuctionAsync(int id, CancellationToken cancellationToken);
+        Task<List<Auction>> GetUnpaidEndedAuctionsAsync(CancellationToken cancellationToken);
+        Task<DateTime?> GetNextUnpaidAuctionEndDateAsync(CancellationToken cancellationToken);
     }
 }

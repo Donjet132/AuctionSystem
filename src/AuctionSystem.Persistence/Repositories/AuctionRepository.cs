@@ -46,5 +46,21 @@ namespace AuctionSystem.Persistence.Repositories
             _context.Auctions.Remove(auction);
             return await _context.SaveChangesAsync(cancellationToken) > 0;
         }
+
+        public async Task<List<Auction>> GetUnpaidEndedAuctionsAsync(CancellationToken cancellationToken)
+        {
+            return await _context.Auctions
+                .Where(a => !a.IsPaidOut && a.EndDate <= DateTime.UtcNow)
+                .ToListAsync(cancellationToken);
+        }
+
+        public async Task<DateTime?> GetNextUnpaidAuctionEndDateAsync(CancellationToken cancellationToken)
+        {
+            return await _context.Auctions
+                .Where(a => !a.IsPaidOut && a.EndDate > DateTime.UtcNow)
+                .OrderBy(a => a.EndDate)
+                .Select(a => (DateTime?)a.EndDate)
+                .FirstOrDefaultAsync(cancellationToken);
+        }
     }
 }
