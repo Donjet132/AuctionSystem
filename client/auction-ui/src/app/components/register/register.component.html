@@ -1,0 +1,19 @@
+<form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+  <label>
+    Username:
+    <input formControlName="username" />
+  </label>
+  <div *ngIf="registerForm.controls['username'].invalid && registerForm.controls['username'].touched">
+    Username is required
+  </div>
+
+  <label>
+    Password:
+    <input type="password" formControlName="password" />
+  </label>
+  <div *ngIf="registerForm.controls['password'].invalid && registerForm.controls['password'].touched">
+    Password is required
+  </div>
+
+  <button type="submit" [disabled]="registerForm.invalid">Register</button>
+</form>

@@ -1,0 +1,6 @@
+<h1>Current Auctions</h1>
+<ul>
+  <li *ngFor="let auction of auctions$ | async">
+    <a [routerLink]="['/auctions', auction.id]">{{ auction.title }} - Current Price: {{ auction.currentPrice }}</a>
+  </li>
+</ul>

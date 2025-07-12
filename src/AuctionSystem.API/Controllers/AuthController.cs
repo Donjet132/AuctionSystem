@@ -20,8 +20,8 @@ public class AuthController : ControllerBase
     {
         try
         {
-            var token = await _mediator.Send(command);
-            return Ok(new { token });
+            var result = await _mediator.Send(command);
+            return Ok(result);
         }
         catch (Exception ex)
         {
