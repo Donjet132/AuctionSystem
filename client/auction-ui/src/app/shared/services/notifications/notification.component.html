@@ -1,0 +1,13 @@
+<div class="notification-container" [class]="'notification-' + data.type">
+  <div class="notification-content">
+    <mat-icon class="notification-icon">{{ getIcon() }}</mat-icon>
+    <span class="notification-message">{{ data.message }}</span>
+  </div>
+  <button 
+    mat-icon-button 
+    class="notification-close" 
+    (click)="dismiss()"
+    aria-label="Close notification">
+    <mat-icon>close</mat-icon>
+  </button>
+</div>

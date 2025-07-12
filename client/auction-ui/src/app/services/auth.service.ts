@@ -34,4 +34,8 @@ export class AuthService {
   register(username: string, password: string): Observable<void> {
     return this.http.post<void>(`${this.baseUrl}/register`, { username, password });
   }
+
+  logout(): Observable<void> {
+    return this.http.post<void>(`${this.baseUrl}/logout`, {});
+  }
 }

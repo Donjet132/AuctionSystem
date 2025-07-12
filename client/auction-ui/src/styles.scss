@@ -1,1 +1,37 @@
-/* You can add global styles to this file, and also import other style files */
+.notification-success {
+  .mat-snack-bar-container {
+    background: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+  }
+}
+
+.notification-error {
+  .mat-snack-bar-container {
+    background: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+  }
+}
+
+.notification-warning {
+  .mat-snack-bar-container {
+    background: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+  }
+}
+
+.notification-info {
+  .mat-snack-bar-container {
+    background: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+  }
+}
+
+.mat-snack-bar-container {
+  border-radius: 8px !important;
+  max-width: 500px !important;
+  min-width: 300px !important;
+}

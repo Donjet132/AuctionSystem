@@ -1,0 +1,126 @@
+.register-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.register-card {
+  max-width: 400px;
+  width: 100%;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border-radius: 16px;
+  overflow: hidden;
+  
+  mat-card-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 24px;
+    text-align: center;
+    
+    mat-card-title {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    
+    mat-card-subtitle {
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 0.9rem;
+    }
+  }
+  
+  mat-card-content {
+    padding: 32px 24px;
+  }
+  
+  mat-card-actions {
+    padding: 0 24px 24px;
+  }
+}
+
+.register-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.submit-button {
+  height: 48px;
+  font-size: 1rem;
+  font-weight: 500;
+  margin-top: 16px;
+  border-radius: 8px;
+  
+  mat-spinner {
+    margin-right: 8px;
+  }
+  
+  mat-icon {
+    margin-right: 8px;
+  }
+}
+
+.login-link {
+  text-align: center;
+  margin: 0;
+  color: #666;
+  font-size: 0.9rem;
+  
+  a {
+    text-decoration: none;
+    font-weight: 500;
+  }
+}
+
+.center-actions {
+  justify-content: center;
+  display: flex;
+}
+
+// Form field customizations
+::ng-deep {
+  .mat-form-field {
+    .mat-form-field-outline {
+      border-radius: 8px;
+    }
+    
+    .mat-form-field-label {
+      font-weight: 500;
+    }
+  }
+  
+  .mat-button, .mat-raised-button {
+    border-radius: 8px;
+  }
+}
+
+// Responsive design
+@media (max-width: 480px) {
+  .register-container {
+    padding: 10px;
+  }
+  
+  .register-card {
+    mat-card-header {
+      padding: 20px;
+    }
+    
+    mat-card-content {
+      padding: 24px 20px;
+    }
+    
+    mat-card-actions {
+      padding: 0 20px 20px;
+    }
+  }
+}
