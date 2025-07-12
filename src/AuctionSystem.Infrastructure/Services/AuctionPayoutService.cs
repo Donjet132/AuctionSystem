@@ -1,7 +1,7 @@
 ﻿using AuctionSystem.Application.Interfaces.Repositories;
+using AuctionSystem.Domain.Entities;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System.Threading;
 
 public class AuctionPayoutService : BackgroundService
 {
@@ -27,30 +27,16 @@ public class AuctionPayoutService : BackgroundService
 
             foreach (var auction in endedAuctions)
             {
-                var bids = await bidRepo.GetBidsByAuctionIdAsync(auction.Id, stoppingToken);
-                var winningBid = bids.OrderByDescending(b => b.Amount).FirstOrDefault();
-
-                if (winningBid == null)
-                    continue;
-
-                var buyer = await userRepo.GetUserByIdAsync(winningBid.BidderId, stoppingToken);
-                var seller = await userRepo.GetUserByIdAsync(auction.SellerId, stoppingToken);
-
-                if (buyer == null || seller == null || buyer.WalletAmount < winningBid.Amount)
-                    continue;
-
-                buyer.WalletAmount -= winningBid.Amount;
-                seller.WalletAmount += winningBid.Amount;
-
-                auction.IsPaidOut = true;
-
-                await userRepo.UpdateUserAsync(buyer, stoppingToken);
-                await userRepo.UpdateUserAsync(seller, stoppingToken);
-                await auctionRepo.UpdateAuctionAsync(auction, stoppingToken);
+                bool payoutSuccessful = await TryPayoutAuctionAsync(auction, auctionRepo, bidRepo, userRepo, stoppingToken);
+                if (!payoutSuccessful)
+                {
+                    auction.IsPaidOut = true;
+                    await auctionRepo.UpdateAuctionAsync(auction, stoppingToken);
+                }
             }
 
             var nextAuctionEnd = await auctionRepo.GetNextUnpaidAuctionEndDateAsync(stoppingToken);
-            TimeSpan delay = nextAuctionEnd.HasValue
+            var delay = nextAuctionEnd.HasValue
                 ? nextAuctionEnd.Value - DateTime.UtcNow
                 : TimeSpan.FromMinutes(5);
 
@@ -64,5 +50,50 @@ public class AuctionPayoutService : BackgroundService
 
             await Task.WhenAny(delayTask, signalTask);
         }
+    }
+
+    private async Task<bool> TryPayoutAuctionAsync(
+        Auction auction,
+        IAuctionRepository auctionRepo,
+        IBidRepository bidRepo,
+        IUserRepository userRepo,
+        CancellationToken cancellationToken)
+    {
+        var bids = await bidRepo.GetBidsByAuctionIdAsync(auction.Id, cancellationToken);
+        var orderedBids = bids.OrderByDescending(b => b.Amount).ToList();
+
+        if (!orderedBids.Any())
+        {
+            auction.IsPaidOut = true;
+            await auctionRepo.UpdateAuctionAsync(auction, cancellationToken);
+            return true;
+        }
+
+        var seller = await userRepo.GetUserByIdAsync(auction.SellerId, cancellationToken);
+        if (seller == null)
+            return false;
+
+        foreach (var bid in orderedBids)
+        {
+            var buyer = await userRepo.GetUserByIdAsync(bid.BidderId, cancellationToken);
+            if (buyer == null)
+                continue;
+
+            if (buyer.WalletAmount >= bid.Amount)
+            {
+                buyer.WalletAmount -= bid.Amount;
+                seller.WalletAmount += bid.Amount;
+
+                auction.IsPaidOut = true;
+
+                await userRepo.UpdateUserAsync(buyer, cancellationToken);
+                await userRepo.UpdateUserAsync(seller, cancellationToken);
+                await auctionRepo.UpdateAuctionAsync(auction, cancellationToken);
+
+                return true;
+            }
+        }
+
+        return false;
     }
 }
