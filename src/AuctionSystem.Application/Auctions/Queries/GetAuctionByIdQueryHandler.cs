@@ -1,10 +1,12 @@
-﻿using AuctionSystem.Application.Interfaces.Repositories;
-using AuctionSystem.Domain.Entities;
+﻿using AuctionSystem.Application.Auctions.Dtos;
+using System.Security.Claims;
+using AuctionSystem.Application.Interfaces.Repositories;
 using MediatR;
+using AuctionSystem.Application.Bids.Bids;
 
 namespace AuctionSystem.Application.Auctions.Queries
 {
-    public class GetAuctionByIdQueryHandler : IRequestHandler<GetAuctionByIdQuery, Auction?>
+    public class GetAuctionByIdQueryHandler : IRequestHandler<GetAuctionByIdQuery, AuctionDetailsDto?>
     {
         private readonly IAuctionRepository _auctionRepository;
 
@@ -13,9 +15,40 @@ namespace AuctionSystem.Application.Auctions.Queries
             _auctionRepository = auctionRepository;
         }
 
-        public async Task<Auction?> Handle(GetAuctionByIdQuery request, CancellationToken cancellationToken)
+        public async Task<AuctionDetailsDto?> Handle(GetAuctionByIdQuery request, CancellationToken cancellationToken)
         {
-            return await _auctionRepository.GetAuctionByIdAsync(request.Id, cancellationToken);
+            var auction = await _auctionRepository.GetAuctionByIdAsync(request.Id, cancellationToken);
+
+            if (auction == null)
+                return null;
+
+            bool isSeller = auction.SellerId == request.UserId;
+
+            var bids = isSeller
+                ? auction.Bids
+                    .OrderByDescending(b => b.Created)
+                    .Select(b => new BidDto
+                    {
+                        Id = b.Id,
+                        Amount = b.Amount,
+                        TimePlaced = b.Created,
+                        BidderName = b.Bidder.Username
+                    })
+                    .ToList()
+                : new List<BidDto>();
+
+            return new AuctionDetailsDto
+            {
+                Title = auction.Title,
+                Description = auction.Description,
+                StartDate = auction.StartDate.Date,
+                EndDate = auction.EndDate.Date,
+                StartPrice = auction.StartPrice,
+                WinnerName = auction.WinnerId != null ? auction.Winner?.Username : null,
+                IsSeller = isSeller,
+                Bids = bids
+            };
         }
+
     }
 }

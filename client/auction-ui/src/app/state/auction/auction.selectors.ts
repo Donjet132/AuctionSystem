@@ -27,3 +27,13 @@ export const selectAuctionCreateError = createSelector(
   selectAuctionState,
   (state) => state.createError
 );
+
+export const selectAuctionDetails = createSelector(
+  selectAuctionState,
+  (state: AuctionState) => state.auctionDetails
+);
+
+export const selectSelectedAuction = createSelector(
+  selectAuctionState,
+  (state: AuctionState) => state.selectedAuction
+);

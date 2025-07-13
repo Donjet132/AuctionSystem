@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Auction } from '../state/auction/auction.models';
+import { Auction, AuctionDetailsDto } from '../state/auction/auction.models';
 import { environment } from '../../environments/environment';
 
 @Injectable({
@@ -35,5 +35,9 @@ export class AuctionService {
   // Delete an auction
   deleteAuction(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
+
+  getAuctionDetails(auctionId: number): Observable<AuctionDetailsDto> {
+    return this.http.get<AuctionDetailsDto>(`${this.apiUrl}/${auctionId}`);
   }
 }

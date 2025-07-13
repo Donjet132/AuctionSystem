@@ -30,7 +30,8 @@ namespace AuctionSystem.API.Controllers
         [Authorize]
         public async Task<IActionResult> GetById(int id)
         {
-            var result = await _mediator.Send(new GetAuctionByIdQuery(id));
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+            var result = await _mediator.Send(new GetAuctionByIdQuery(id, userId));
             if (result == null)
                 return NotFound();
             return Ok(result);

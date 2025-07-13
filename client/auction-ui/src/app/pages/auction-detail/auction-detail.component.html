@@ -1,0 +1,199 @@
+<div class="auction-detail-container">
+  <!-- Loading State -->
+  <div *ngIf="loading$ | async" class="loading-container">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>Loading auction details...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error$ | async as error" class="error-container">
+    <mat-icon color="warn">error</mat-icon>
+    <h3>Error Loading Auction</h3>
+    <p>{{ error }}</p>
+  </div>
+
+  <!-- Auction Details -->
+  <div *ngIf="auctionDetails$ | async as auction" class="auction-content">
+    
+    <!-- Header Card -->
+    <mat-card class="auction-header">
+      <mat-card-header>
+        <mat-card-title>{{ auction.title }}</mat-card-title>
+        <mat-card-subtitle>
+          <mat-chip [color]="getStatusColor(auction)" selected>
+            <mat-icon>{{ getAuctionStatus(auction) === 'ACTIVE' ? 'schedule' : 
+                          getAuctionStatus(auction) === 'ENDED' ? 'event_busy' : 'event' }}</mat-icon>
+            {{ getAuctionStatus(auction) }}
+          </mat-chip>
+        </mat-card-subtitle>
+      </mat-card-header>
+      
+      <mat-card-content>
+        <p class="auction-description">{{ auction.description }}</p>
+        
+        <div class="auction-meta">
+          <div class="meta-item">
+            <mat-icon>event</mat-icon>
+            <div>
+              <strong>Start Date:</strong>
+              <span>{{ formatDate(auction.startDate) }}</span>
+            </div>
+          </div>
+          
+          <div class="meta-item">
+            <mat-icon>event_busy</mat-icon>
+            <div>
+              <strong>End Date:</strong>
+              <span>{{ formatDate(auction.endDate) }}</span>
+            </div>
+          </div>
+          
+          <div class="meta-item">
+            <mat-icon>attach_money</mat-icon>
+            <div>
+              <strong>Starting Price:</strong>
+              <span>{{ formatCurrency(auction.startPrice) }}</span>
+            </div>
+          </div>
+          
+          <div class="meta-item" *ngIf="auction.winnerName">
+            <mat-icon>emoji_events</mat-icon>
+            <div>
+              <strong>Winner:</strong>
+              <span>{{ auction.winnerName }}</span>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Bidding Information -->
+    <div class="bidding-section">
+      <!-- Current Highest Bid -->
+      <mat-card class="bid-info-card">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>trending_up</mat-icon>
+            Current Highest Bid
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="highest-bid" *ngIf="getHighestBid(auction.bids) as highestBid; else noBids">
+            <span class="bid-amount">{{ formatCurrency(highestBid) }}</span>
+            <span class="bid-count" *ngIf="auction.bids.length > 0">
+              ({{ auction.bids.length }} bid{{ auction.bids.length !== 1 ? 's' : '' }})
+            </span>
+          </div>
+          <ng-template #noBids>
+            <div class="no-bids">
+              <mat-icon>money_off</mat-icon>
+              <span>No bids yet</span>
+            </div>
+          </ng-template>
+        </mat-card-content>
+        
+        <!-- Bid Action Button (only for non-sellers and active auctions) -->
+        <mat-card-actions *ngIf="!auction.isSeller && isAuctionActive(auction)">
+          <button mat-raised-button color="primary" (click)="onPlaceBid(auction)">
+            <mat-icon>add</mat-icon>
+            Place Bid
+          </button>
+        </mat-card-actions>
+      </mat-card>
+
+      <!-- Latest Bid for Non-Sellers -->
+      <mat-card class="latest-bid-card" *ngIf="!auction.isSeller && getLatestBid(auction.bids) as latestBid">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>access_time</mat-icon>
+            Latest Bid
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="latest-bid-info">
+            <div class="bid-amount">{{ formatCurrency(latestBid.amount) }}</div>
+            <div class="bid-time">{{ formatDate(latestBid.timePlaced) }}</div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- All Bids for Sellers -->
+    <mat-card class="bids-table-card" *ngIf="auction.isSeller">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon matBadge="{{ auction.bids.length }}" matBadgeColor="primary">list</mat-icon>
+          All Bids
+        </mat-card-title>
+      </mat-card-header>
+      
+      <mat-card-content>
+        <div *ngIf="auction.bids.length === 0" class="no-bids-message">
+          <mat-icon>info</mat-icon>
+          <p>No bids have been placed yet.</p>
+        </div>
+        
+        <div class="table-container" *ngIf="auction.bids.length > 0">
+          <table mat-table [dataSource]="auction.bids" class="bids-table">
+            
+            <!-- Bidder Name Column -->
+            <ng-container matColumnDef="bidderName">
+              <th mat-header-cell *matHeaderCellDef>Bidder</th>
+              <td mat-cell *matCellDef="let bid">
+                <div class="bidder-info">
+                  <mat-icon>person</mat-icon>
+                  <span>{{ bid.bidderName }}</span>
+                </div>
+              </td>
+            </ng-container>
+
+            <!-- Amount Column -->
+            <ng-container matColumnDef="amount">
+              <th mat-header-cell *matHeaderCellDef>Amount</th>
+              <td mat-cell *matCellDef="let bid">
+                <span class="bid-amount">{{ formatCurrency(bid.amount) }}</span>
+              </td>
+            </ng-container>
+
+            <!-- Time Placed Column -->
+            <ng-container matColumnDef="timePlaced">
+              <th mat-header-cell *matHeaderCellDef>Time Placed</th>
+              <td mat-cell *matCellDef="let bid">
+                <div class="time-info">
+                  <mat-icon>schedule</mat-icon>
+                  <span>{{ formatDate(bid.timePlaced) }}</span>
+                </div>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Auction Status Information -->
+    <mat-card class="status-card">
+      <mat-card-content>
+        <div class="status-info">
+          <mat-icon [color]="getStatusColor(auction)">info</mat-icon>
+          <div>
+            <ng-container [ngSwitch]="getAuctionStatus(auction)">
+              <p *ngSwitchCase="'ACTIVE'">
+                This auction is currently active. {{ auction.isSeller ? 'Monitor bids in real-time.' : 'You can place bids now.' }}
+              </p>
+              <p *ngSwitchCase="'ENDED'">
+                This auction has ended. {{ auction.winnerName ? 'Winner: ' + auction.winnerName : 'No winner determined.' }}
+              </p>
+              <p *ngSwitchCase="'UPCOMING'">
+                This auction hasn't started yet. Bidding will begin on {{ formatDate(auction.startDate) }}.
+              </p>
+            </ng-container>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+  </div>
+</div>

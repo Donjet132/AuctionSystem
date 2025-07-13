@@ -1,5 +1,5 @@
 import { createAction, props } from '@ngrx/store';
-import { Auction } from './auction.models';
+import { Auction, AuctionDetailsDto } from './auction.models';
 
 export const loadAuctions = createAction('[Auction] Load Auctions');
 
@@ -25,5 +25,20 @@ export const createAuctionSuccess = createAction(
 
 export const createAuctionFailure = createAction(
   '[Auction] Create Auction Failure',
+  props<{ error: string }>()
+);
+
+export const loadAuctionDetails = createAction(
+  '[Auction] Load Auction Details',
+  props<{ auctionId: number }>()
+);
+
+export const loadAuctionDetailsSuccess = createAction(
+  '[Auction] Load Auction Details Success',
+  props<{ auctionDetails: AuctionDetailsDto }>()
+);
+
+export const loadAuctionDetailsFailure = createAction(
+  '[Auction] Load Auction Details Failure',
   props<{ error: string }>()
 );

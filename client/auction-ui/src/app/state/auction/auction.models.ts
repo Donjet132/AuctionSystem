@@ -1,12 +1,24 @@
 export interface AuctionState {
   auctions: Auction[];
   selectedAuction: Auction | null;
+  auctionDetails: AuctionDetailsDto | null;
   loading: boolean;
   createLoading: boolean;
   error: string | null;
   createError: string | null;
-  lastAction?: 'create' | 'update' | 'delete' | 'fetch' | 'fetchById' | null;
+  lastAction?: AuctionActionType | null;
 }
+
+export const initialAuctionState: AuctionState = {
+  auctions: [],
+  selectedAuction: null,
+  auctionDetails: null,
+  loading: false,
+  createLoading: false,
+  error: null,
+  createError: null,
+  lastAction: null
+};
 
 export interface Auction {
   id: number;
@@ -43,4 +55,31 @@ export interface AuctionResponse {
 
 export interface AuctionsResponse {
   auctions: Auction[];
+}
+
+export interface BidDto {
+  id: string;
+  amount: number;
+  timePlaced: Date;
+  bidderName: string;
+}
+
+export interface AuctionDetailsDto {
+  title: string;
+  description: string;
+  startDate: Date;
+  endDate: Date;
+  startPrice: number;
+  winnerName: string | null;
+  isSeller: boolean;
+  bids: BidDto[];
+}
+
+export enum AuctionActionType {
+  CREATE = 'create',
+  UPDATE = 'update',
+  DELETE = 'delete',
+  FETCH = 'fetch',
+  FETCH_BY_ID = 'fetchById',
+  FETCH_DETAILS = 'fetchDetails'
 }

@@ -37,4 +37,18 @@ export class AuctionEffects {
       )
     )
   );
+
+  loadAuctionDetails$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AuctionActions.loadAuctionDetails),
+      mergeMap(action =>
+        this.auctionService.getAuctionDetails(action.auctionId).pipe(
+          map(auctionDetails => AuctionActions.loadAuctionDetailsSuccess({ auctionDetails })),
+          catchError(error => of(AuctionActions.loadAuctionDetailsFailure({ 
+            error: error.message || 'Failed to load auction details' 
+          })))
+        )
+      )
+    )
+  );
 }
