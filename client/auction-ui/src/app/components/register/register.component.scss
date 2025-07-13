@@ -44,6 +44,28 @@
   }
 }
 
+.mat-mdc-form-field {
+  .mat-mdc-form-field-flex {
+    align-items: center;
+  }
+
+  .mat-mdc-input-element {
+    padding-left: 12px;
+    
+    &::placeholder {
+      padding-left: 0;
+    }
+  }
+  
+  input {
+    padding-left: 12px;
+    
+    &::placeholder {
+      padding-left: 0;
+    }
+  }
+}
+
 .register-form {
   display: flex;
   flex-direction: column;

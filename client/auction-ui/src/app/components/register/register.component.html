@@ -15,7 +15,8 @@
           <mat-label>Username</mat-label>
           <input 
             matInput 
-            formControlName="username"
+            formControlName="username" 
+            placeholder="Enter your username"
             autocomplete="username">
           <mat-icon matSuffix>person</mat-icon>
           <mat-error *ngIf="registerForm.get('username')?.invalid && registerForm.get('username')?.touched">
@@ -29,7 +30,8 @@
           <input 
             matInput 
             [type]="hidePassword ? 'password' : 'text'"
-            formControlName="password"
+            formControlName="password" 
+            placeholder="Enter your password"
             autocomplete="new-password">
           <button 
             mat-icon-button 
@@ -51,7 +53,8 @@
           <input 
             matInput 
             [type]="hideConfirmPassword ? 'password' : 'text'"
-            formControlName="confirmPassword"
+            formControlName="confirmPassword" 
+            placeholder="Confirm your password"
             autocomplete="new-password"
             (paste)="onConfirmPasswordPaste($event)">
           <button 
