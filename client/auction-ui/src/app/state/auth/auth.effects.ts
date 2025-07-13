@@ -66,8 +66,21 @@ export class AuthEffects {
           });
         }
 
-        return AuthActions.logout(); // or do nothing
+        return AuthActions.logout();
       })
     )
+  );
+
+  logout$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(AuthActions.logout),
+        tap(() => {
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+          this.router.navigate(['/login']);
+        })
+      ),
+    { dispatch: false }
   );
 }

@@ -135,6 +135,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
   // Get error message for confirm password
   getConfirmPasswordErrorMessage(): string {
     const control = this.registerForm.get('confirmPassword');
+    console.log(control?.errors);
     if (control?.hasError('required')) {
       return 'Please confirm your password';
     }

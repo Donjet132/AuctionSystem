@@ -10,7 +10,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import * as AuthActions from '../../state/auth/auth.actions';
 import { NotificationService } from '../../shared/services/notifications/notification.service';
 import { AuthState } from '../../state/auth/auth.models';
@@ -28,7 +28,8 @@ import { selectAuthState } from '../../state/auth/auth.selectors';
     MatButtonModule,
     MatIconModule,
     MatProgressSpinnerModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    RouterModule
   ],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
