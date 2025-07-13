@@ -35,3 +35,114 @@
   max-width: 500px !important;
   min-width: 300px !important;
 }
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+/* Force proper backdrop */
+.cdk-overlay-backdrop.cdk-overlay-backdrop-showing {
+  background: rgba(0, 0, 0, 0.6) !important;
+  backdrop-filter: blur(3px) !important;
+}
+
+/* Main datepicker container */
+.mat-datepicker-content {
+  background: #ffffff !important;
+  border-radius: 12px !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3) !important;
+  border: none !important;
+  overflow: hidden !important;
+  margin: 0 !important;
+}
+
+.mat-datepicker-content-container {
+  background: #ffffff !important;
+  border-radius: 12px !important;
+}
+
+/* Calendar styling */
+.mat-calendar {
+  background: #ffffff !important;
+  border-radius: 12px !important;
+}
+
+.mat-calendar-header {
+  background: #f5f7fa !important;
+  border-bottom: 1px solid #e1e5e9 !important;
+  padding: 20px !important;
+  color: #2c3e50 !important;
+}
+
+.mat-calendar-period-button {
+  background: transparent !important;
+  color: #2c3e50 !important;
+  font-weight: 600 !important;
+  font-size: 16px !important;
+}
+
+.mat-calendar-arrow {
+  border-top-color: #2c3e50 !important;
+}
+
+.mat-calendar-previous-button,
+.mat-calendar-next-button {
+  color: #2c3e50 !important;
+}
+
+/* Calendar body */
+.mat-calendar-body {
+  background: #ffffff !important;
+  padding: 8px !important;
+}
+
+.mat-calendar-table {
+  background: #ffffff !important;
+}
+
+.mat-calendar-table-header {
+  background: #ffffff !important;
+  color: #6c757d !important;
+  font-weight: 600 !important;
+}
+
+/* Day cells */
+.mat-calendar-body-cell {
+  background: #ffffff !important;
+  color: #2c3e50 !important;
+  border-radius: 8px !important;
+  margin: 2px !important;
+  font-weight: 500 !important;
+}
+
+.mat-calendar-body-cell:hover {
+  background: #e3f2fd !important;
+  color: #1976d2 !important;
+}
+
+.mat-calendar-body-today:not(.mat-calendar-body-selected) {
+  border: 2px solid #1976d2 !important;
+  background: #ffffff !important;
+  color: #1976d2 !important;
+  font-weight: 600 !important;
+}
+
+.mat-calendar-body-selected {
+  background: #1976d2 !important;
+  color: #ffffff !important;
+  font-weight: 600 !important;
+}
+
+.mat-calendar-body-disabled {
+  color: #bdc3c7 !important;
+}
+
+/* Ensure proper positioning */
+.cdk-overlay-container {
+  z-index: 1050 !important;
+}
+
+.cdk-overlay-pane {
+  z-index: 1051 !important;
+}

@@ -23,8 +23,8 @@ export class AuctionService {
   }
 
   // Create a new auction
-  createAuction(auction: Auction): Observable<Auction> {
-    return this.http.post<Auction>(this.apiUrl, auction);
+  createAuction(auction: Auction): Observable<{ id: number }> {
+    return this.http.post<{ id: number }>(this.apiUrl, auction);
   }
 
   // Edit/update an auction

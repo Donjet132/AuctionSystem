@@ -1,17 +1,15 @@
 import { createReducer, on } from '@ngrx/store';
 import * as AuctionActions from './auction.actions';
-import { Auction } from './auction.models';
+import { AuctionState } from './auction.models';
 
-export interface AuctionState {
-  auctions: Auction[];
-  loading: boolean;
-  error: string | null;
-}
-
-export const initialState: AuctionState = {
+const initialState: AuctionState = {
   auctions: [],
+  selectedAuction: null,
   loading: false,
-  error: null
+  createLoading: false,
+  error: null,
+  createError: null,
+  lastAction: null
 };
 
 export const auctionReducer = createReducer(
@@ -20,11 +18,28 @@ export const auctionReducer = createReducer(
   on(AuctionActions.loadAuctionsSuccess, (state, { auctions }) => ({
     ...state,
     auctions,
-    loading: false
+    loading: false,
   })),
   on(AuctionActions.loadAuctionsFailure, (state, { error }) => ({
     ...state,
     loading: false,
-    error
+    error,
+  })),
+
+  // Create Auction cases
+  on(AuctionActions.createAuction, (state) => ({
+    ...state,
+    createLoading: true,
+    createError: null,
+  })),
+  on(AuctionActions.createAuctionSuccess, (state, { auction }) => ({
+    ...state,
+    createLoading: false,
+    auctions: [...state.auctions, auction],
+  })),
+  on(AuctionActions.createAuctionFailure, (state, { error }) => ({
+    ...state,
+    createLoading: false,
+    createError: error,
   }))
 );

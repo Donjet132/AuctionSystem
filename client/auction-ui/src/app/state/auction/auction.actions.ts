@@ -12,3 +12,18 @@ export const loadAuctionsFailure = createAction(
   '[Auction] Load Auctions Failure',
   props<{ error: string }>()
 );
+
+export const createAuction = createAction(
+  '[Auction] Create Auction',
+  props<{ auction: Auction }>()
+);
+
+export const createAuctionSuccess = createAction(
+  '[Auction] Create Auction Success',
+  props<{ auction: Auction }>()
+);
+
+export const createAuctionFailure = createAction(
+  '[Auction] Create Auction Failure',
+  props<{ error: string }>()
+);

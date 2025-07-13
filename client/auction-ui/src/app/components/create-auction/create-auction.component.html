@@ -1,0 +1,169 @@
+<div class="create-auction-wrapper">
+  <div class="create-auction-container">
+    <div class="header-section">
+      <div class="icon-wrapper">
+        <mat-icon class="auction-icon">gavel</mat-icon>
+      </div>
+      <h1 class="page-title">Create New Auction</h1>
+      <p class="page-subtitle">Fill in the details to create your auction listing</p>
+    </div>
+
+    <mat-card class="auction-form-card">
+      <form [formGroup]="auctionForm" (ngSubmit)="onSubmit()" class="auction-form">
+        
+        <!-- Title Field -->
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>
+              <mat-icon matPrefix>title</mat-icon>
+              Auction Title
+            </mat-label>
+            <input matInput formControlName="title" placeholder="Enter auction title" />
+            <mat-hint>Minimum 3 characters</mat-hint>
+            <mat-error *ngIf="title?.hasError('required')">
+              <mat-icon>error</mat-icon>
+              Title is required
+            </mat-error>
+            <mat-error *ngIf="title?.hasError('minlength')">
+              <mat-icon>error</mat-icon>
+              Minimum 3 characters required
+            </mat-error>
+            <mat-error *ngIf="title?.hasError('maxlength')">
+              <mat-icon>error</mat-icon>
+              Maximum 100 characters allowed
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <!-- Description Field -->
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>
+              <mat-icon matPrefix>description</mat-icon>
+              Description
+            </mat-label>
+            <textarea 
+              matInput 
+              formControlName="description" 
+              rows="4" 
+              placeholder="Describe your auction item in detail..."
+              class="description-textarea">
+            </textarea>
+            <mat-hint>Provide detailed information about the item</mat-hint>
+            <mat-error *ngIf="description?.hasError('required')">
+              <mat-icon>error</mat-icon>
+              Description is required
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <!-- Date Fields Row -->
+        <div class="form-row date-row">
+          <mat-form-field appearance="outline" class="date-field">
+            <mat-label>
+              <mat-icon matPrefix>event</mat-icon>
+              Start Date
+            </mat-label>
+            <input matInput [matDatepicker]="startPicker" formControlName="startDate" (click)="startPicker.open()" readonly>
+            <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+            <mat-datepicker #startPicker></mat-datepicker>
+            <mat-error *ngIf="startDate?.hasError('required')">
+              <mat-icon>error</mat-icon>
+              Start date required
+            </mat-error>
+            <mat-error *ngIf="startDate?.hasError('startDatePast')">
+              <mat-icon>error</mat-icon>
+              Start date cannot be in the past
+            </mat-error>
+            <mat-error *ngIf="startDate?.hasError('startDateAfterEnd')">
+              <mat-icon>error</mat-icon>
+              Start date must be before end date
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="date-field">
+            <mat-label>
+              <mat-icon matPrefix>event_available</mat-icon>
+              End Date
+            </mat-label>
+            <input matInput [matDatepicker]="endPicker" formControlName="endDate" (click)="endPicker.open()" readonly>
+            <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+            <mat-datepicker #endPicker></mat-datepicker>
+            <mat-error *ngIf="endDate?.hasError('required')">
+              <mat-icon>error</mat-icon>
+              End date required
+            </mat-error>
+            <mat-error *ngIf="endDate?.hasError('endDatePast')">
+              <mat-icon>error</mat-icon>
+              End date cannot be in the past
+            </mat-error>
+            <mat-error *ngIf="endDate?.hasError('endDateBeforeStart')">
+              <mat-icon>error</mat-icon>
+              End date must be after start date
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <!-- Start Price Field -->
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="full-width price-field">
+            <mat-label>
+              <mat-icon matPrefix>attach_money</mat-icon>
+              Starting Price
+            </mat-label>
+            <input 
+              matInput 
+              formControlName="startPrice" 
+              type="number" 
+              min="0.01" 
+              step="0.01"
+              placeholder="0.00" 
+            />
+            <span matSuffix>USD</span>
+            <mat-hint>Minimum starting price: $0.01</mat-hint>
+            <mat-error *ngIf="startPrice?.hasError('required')">
+              <mat-icon>error</mat-icon>
+              Start price is required
+            </mat-error>
+            <mat-error *ngIf="startPrice?.hasError('min')">
+              <mat-icon>error</mat-icon>
+              Price must be at least $0.01
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="form-actions">
+          <button 
+            mat-raised-button 
+            color="primary" 
+            type="submit" 
+            [disabled]="auctionForm.invalid || isLoading"
+            class="submit-btn">
+            <div class="button-content">
+              <mat-progress-spinner
+                *ngIf="isLoading"
+                diameter="20"
+                mode="indeterminate"
+                class="button-spinner">
+              </mat-progress-spinner>
+              <mat-icon *ngIf="!isLoading">add_circle</mat-icon>
+              <span>{{ isLoading ? 'Creating Auction...' : 'Create Auction' }}</span>
+            </div>
+          </button>
+          
+          <button 
+            mat-stroked-button 
+            type="button" 
+            (click)="onReset()"
+            [disabled]="isLoading"
+            class="reset-btn">
+            <mat-icon>refresh</mat-icon>
+            Reset Form
+          </button>
+        </div>
+
+      </form>
+    </mat-card>
+  </div>
+</div>

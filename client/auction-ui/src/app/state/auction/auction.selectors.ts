@@ -1,5 +1,5 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
-import { AuctionState } from './auction.reducer';
+import { AuctionState } from './auction.models';
 
 export const selectAuctionState = createFeatureSelector<AuctionState>('auction');
 
@@ -16,4 +16,14 @@ export const selectAuctionLoading = createSelector(
 export const selectAuctionError = createSelector(
   selectAuctionState,
   (state) => state.error
+);
+
+export const selectAuctionCreateLoading = createSelector(
+  selectAuctionState,
+  (state) => state.createLoading
+);
+
+export const selectAuctionCreateError = createSelector(
+  selectAuctionState,
+  (state) => state.createError
 );
