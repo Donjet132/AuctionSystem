@@ -29,7 +29,7 @@ This application enables users to register, manage auctions, and place bids with
 - **API Layer**: Controllers, validators, DI setup
 
 > Uses **MediatR** for CQRS (Command Query Responsibility Segregation)  
-> Integrated **FluentValidation**, **AutoMapper**, **Entity Framework Core**
+> Integrated **FluentValidation**, **Entity Framework Core**
 
 ### ✅ Frontend: Angular 19
 
