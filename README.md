@@ -84,9 +84,11 @@ To run this project locally, follow these steps:
 ```bash
   cd src\AuctionSystem.API
   dotnet run
+ ```
 
 5. **Run the frontend**:
 ```bash
   cd auction-ui
   npm install
   ng serve
+ ```
