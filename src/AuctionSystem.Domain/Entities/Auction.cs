@@ -21,8 +21,8 @@ namespace AuctionSystem.Domain.Entities
         public bool IsActive => DateTime.UtcNow < EndDate;
         public bool IsPaidOut { get; set; } = false;
         public int? WinnerId { get; set; }
-        public User? Winner { get; set; }
-        public User Seller { get; set; } = null!;
-        public ICollection<Bid> Bids { get; set; } = new List<Bid>();
+        public virtual User? Winner { get; set; }
+        public virtual User Seller { get; set; } = null!;
+        public virtual ICollection<Bid> Bids { get; set; } = new List<Bid>();
     }
 }

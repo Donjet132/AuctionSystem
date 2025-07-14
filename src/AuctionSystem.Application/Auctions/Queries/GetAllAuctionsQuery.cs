@@ -1,9 +1,9 @@
-﻿using AuctionSystem.Domain.Entities;
+﻿using AuctionSystem.Application.Auctions.Dtos;
 using MediatR;
 
 namespace AuctionSystem.Application.Auctions.Queries
 {
-    public class GetAllAuctionsQuery : IRequest<List<Auction>>
+    public class GetAllAuctionsQuery : IRequest<List<AuctionDetailsDto>>
     {
     }
 }

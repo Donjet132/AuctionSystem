@@ -1,0 +1,140 @@
+<div class="bid-modal">
+  <div class="bid-modal__header">
+    <h2 mat-dialog-title class="bid-modal__title">
+      <mat-icon class="bid-modal__icon">gavel</mat-icon>
+      Place Your Bid
+    </h2>
+    <button 
+      mat-icon-button 
+      class="bid-modal__close-btn"
+      (click)="onCancel()"
+      aria-label="Close dialog">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <mat-dialog-content class="bid-modal__content">
+    <!-- Auction Info Section -->
+    <div class="bid-modal__auction-info">
+      <h3 class="bid-modal__auction-title">{{ data.auction.title }}</h3>
+      <p class="bid-modal__auction-description">{{ data.auction.description }}</p>
+      
+      <div class="bid-modal__price-info">
+        <div class="bid-modal__price-item">
+          <span class="bid-modal__price-label">Starting Price:</span>
+          <span class="bid-modal__price-value">{{ formatCurrency(data.auction.startPrice) }}</span>
+        </div>
+        
+        <div class="bid-modal__price-item" *ngIf="data.auction.highestBid">
+          <span class="bid-modal__price-label">Current Highest Bid:</span>
+          <span class="bid-modal__price-value bid-modal__price-value--highlight">
+            {{ formatCurrency(data.auction.highestBid) }}
+          </span>
+        </div>
+        
+        <div class="bid-modal__price-item">
+          <span class="bid-modal__price-label">Minimum Bid:</span>
+          <span class="bid-modal__price-value bid-modal__price-value--minimum">
+            {{ formatCurrency(minBidAmount) }}
+          </span>
+        </div>
+      </div>
+
+      <div class="bid-modal__auction-status">
+        <mat-chip-set>
+          <mat-chip 
+            [class]="isAuctionActive() ? 'bid-modal__status-chip--active' : 'bid-modal__status-chip--ended'">
+            <mat-icon matChipAvatar>{{ isAuctionActive() ? 'schedule' : 'event_busy' }}</mat-icon>
+            {{ isAuctionActive() ? 'Active' : 'Ended' }}
+          </mat-chip>
+        </mat-chip-set>
+        <span class="bid-modal__end-date">
+          Ends: {{ formatDate(data.auction.endDate) }}
+        </span>
+      </div>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <!-- Bid Form Section -->
+    <div class="bid-modal__bid-section" *ngIf="isAuctionActive()">
+      <h4 class="bid-modal__section-title">Your Bid</h4>
+      
+      <form [formGroup]="bidForm" (ngSubmit)="onSubmit()" class="bid-modal__form">
+        <mat-form-field class="bid-modal__amount-field" appearance="outline">
+          <mat-label>Bid Amount</mat-label>
+          <input 
+            matInput 
+            type="number" 
+            step="0.01"
+            min="0"
+            formControlName="amount"
+            placeholder="Enter your bid amount"
+            [class.bid-modal__input--error]="amountControl?.invalid && amountControl?.touched">
+          <span matTextPrefix>$</span>
+          <mat-icon matSuffix>attach_money</mat-icon>
+          <mat-error *ngIf="amountControl?.invalid && amountControl?.touched">
+            {{ getAmountErrorMessage() }}
+          </mat-error>
+          <mat-hint>Minimum bid: {{ formatCurrency(minBidAmount) }}</mat-hint>
+        </mat-form-field>
+
+        <div class="bid-modal__bid-info">
+          <div class="bid-modal__bid-summary">
+            <span class="bid-modal__summary-label">You will bid:</span>
+            <span class="bid-modal__summary-amount">
+              {{ formatCurrency(bidForm.value.amount || 0) }}
+            </span>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- Auction Ended Message -->
+    <div class="bid-modal__ended-message" *ngIf="!isAuctionActive()">
+      <mat-icon class="bid-modal__ended-icon">event_busy</mat-icon>
+      <h4>Auction Has Ended</h4>
+      <p>This auction ended on {{ formatDate(data.auction.endDate) }}</p>
+      <p *ngIf="data.auction.winnerName">
+        <strong>Winner:</strong> {{ data.auction.winnerName }}
+      </p>
+    </div>
+
+    <!-- Recent Bids Section (only for sellers) -->
+    <div class="bid-modal__recent-bids" *ngIf="data.auction.isSeller && data.auction.bids.length > 0">
+      <mat-divider></mat-divider>
+      <h4 class="bid-modal__section-title">Recent Bids</h4>
+      <div class="bid-modal__bids-list">
+        <div 
+          class="bid-modal__bid-item" 
+          *ngFor="let bid of data.auction.bids.slice(0, 3)">
+          <div class="bid-modal__bid-info">
+            <span class="bid-modal__bid-amount">{{ formatCurrency(bid.amount) }}</span>
+            <span class="bid-modal__bid-bidder">by {{ bid.bidderName }}</span>
+          </div>
+          <span class="bid-modal__bid-time">{{ formatDate(bid.timePlaced) }}</span>
+        </div>
+      </div>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions class="bid-modal__actions">
+    <button 
+      mat-button 
+      (click)="onCancel()"
+      class="bid-modal__cancel-btn">
+      Cancel
+    </button>
+    
+    <button 
+      mat-raised-button 
+      color="primary"
+      [disabled]="!bidForm.valid || isLoading || !isAuctionActive()"
+      (click)="onSubmit()"
+      class="bid-modal__submit-btn">
+      <mat-spinner diameter="20" *ngIf="isLoading"></mat-spinner>
+      <mat-icon *ngIf="!isLoading">gavel</mat-icon>
+      <span>{{ isLoading ? 'Placing Bid...' : 'Place Bid' }}</span>
+    </button>
+  </mat-dialog-actions>
+</div>

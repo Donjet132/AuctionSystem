@@ -4,6 +4,8 @@ import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { BidModalService } from '../../services/bid-modal.service';
+import * as BidActions from '../../state/bid/bid.actions';
 
 // Angular Material Imports
 import { MatCardModule } from '@angular/material/card';
@@ -42,8 +44,6 @@ export class AuctionDetailComponent implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
   private destroy$ = new Subject<void>();
 
-  // Note: You'll need to modify your state to include AuctionDetailsDto
-  // or create a separate selector that transforms selectedAuction to AuctionDetailsDto
   auctionDetails$: Observable<AuctionDetailsDto | null>;
   loading$: Observable<boolean>;
   error$: Observable<string | null>;
@@ -51,7 +51,7 @@ export class AuctionDetailComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = ['bidderName', 'amount', 'timePlaced'];
   displayedColumnsForBuyer: string[] = ['amount', 'timePlaced'];
 
-  constructor() {
+  constructor(private bidModalService: BidModalService) {
     this.auctionDetails$ = this.store.select(selectAuctionDetails);
     this.loading$ = this.store.select(selectAuctionLoading);
     this.error$ = this.store.select(selectAuctionError);
@@ -102,11 +102,6 @@ export class AuctionDetailComponent implements OnInit, OnDestroy {
     }
   }
 
-  getHighestBid(bids: BidDto[]): number | null {
-    if (!bids || bids.length === 0) return null;
-    return Math.max(...bids.map(bid => bid.amount));
-  }
-
   getLatestBid(bids: BidDto[]): BidDto | null {
     if (!bids || bids.length === 0) return null;
     return bids.reduce((latest, current) => 
@@ -129,8 +124,17 @@ export class AuctionDetailComponent implements OnInit, OnDestroy {
     }).format(new Date(date));
   }
 
-  onPlaceBid(auction: AuctionDetailsDto) {
-    // Implement bid placement logic
-    console.log('Place bid for auction:', auction.title);
-  }
+onPlaceBid(auction: AuctionDetailsDto) {
+  this.bidModalService.openBidModal(auction).subscribe(result => {
+    if (result?.success) {
+      this.store.dispatch(BidActions.placeBid({
+        auctionId: auction.id,
+        amount: result.amount
+      }));
+      
+    } else {
+      console.log('Bid placement cancelled or failed');
+    }
+  });
+}
 }

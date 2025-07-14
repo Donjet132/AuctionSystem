@@ -11,6 +11,9 @@ import { authReducer } from './state/auth/auth.reducer';
 import { AuthEffects } from './state/auth/auth.effects';
 import { auctionReducer } from './state/auction/auction.reducer';
 import { AuctionEffects } from './state/auction/auction.effects';
+import { bidReducer } from './state/bid/bid.reducer';
+import { BidEffects } from './state/bid/bid.effects';
+
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -19,9 +22,10 @@ export const appConfig: ApplicationConfig = {
     ...appProviders,
     provideStore({
       auth: authReducer,
-      auction: auctionReducer
+      auction: auctionReducer,
+      bid: bidReducer
     }),
-    provideEffects([AuthEffects, AuctionEffects]),
+    provideEffects([AuthEffects, AuctionEffects, BidEffects]),
     provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() }),
     provideRouterStore()
   ]

@@ -1,7 +1,28 @@
-<h1>Current Auctions</h1>
-<a routerLink="/create-auction">Create Auction</a>
-<ul>
-  <li *ngFor="let auction of auctions$ | async">
-    <a [routerLink]="['/detail', auction.id]">{{ auction.title }} - Start Price: {{ auction.startPrice }}</a>
-  </li>
-</ul>
+<!-- auction-list.component.html -->
+<div class="auction-container">
+  <!-- Header -->
+  <div class="header">
+    <h1>Current Auctions</h1>
+    <a mat-raised-button color="primary" routerLink="/create-auction">Create Auction</a>
+  </div>
+
+  <!-- Auctions Grid -->
+  <div class="auctions-grid">
+    <mat-card 
+      *ngFor="let auction of auctions$ | async" 
+      class="auction-card"
+      [routerLink]="['/detail', auction.id]">
+      
+      <mat-card-content>
+        <h3 class="auction-title">{{ auction.title }}</h3>
+        <p class="start-price">Start Price: ${{ auction.startPrice | number:'1.2-2' }}</p>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="(auctions$ | async)?.length === 0">
+    <p>No auctions available.</p>
+    <a mat-raised-button color="primary" routerLink="/create-auction">Create Auction</a>
+  </div>
+</div>

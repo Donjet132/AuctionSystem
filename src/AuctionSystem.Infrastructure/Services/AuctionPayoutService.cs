@@ -62,6 +62,7 @@ public class AuctionPayoutService : BackgroundService
         var bids = await bidRepo.GetBidsByAuctionIdAsync(auction.Id, cancellationToken);
         var orderedBids = bids.OrderByDescending(b => b.Amount).ToList();
 
+
         if (!orderedBids.Any())
         {
             auction.IsPaidOut = true;
@@ -76,6 +77,7 @@ public class AuctionPayoutService : BackgroundService
         foreach (var bid in orderedBids)
         {
             var buyer = await userRepo.GetUserByIdAsync(bid.BidderId, cancellationToken);
+
             if (buyer == null)
                 continue;
 

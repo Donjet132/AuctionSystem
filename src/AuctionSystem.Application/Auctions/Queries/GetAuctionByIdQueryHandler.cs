@@ -37,8 +37,13 @@ namespace AuctionSystem.Application.Auctions.Queries
                     .ToList()
                 : new List<BidDto>();
 
+            var highestBidAmount = auction.Bids.Any()
+                ? auction.Bids.Max(b => b.Amount)
+                : (decimal?)null;
+
             return new AuctionDetailsDto
             {
+                Id = auction.Id,
                 Title = auction.Title,
                 Description = auction.Description,
                 StartDate = auction.StartDate.Date,
@@ -46,6 +51,7 @@ namespace AuctionSystem.Application.Auctions.Queries
                 StartPrice = auction.StartPrice,
                 WinnerName = auction.WinnerId != null ? auction.Winner?.Username : null,
                 IsSeller = isSeller,
+                HighestBid = highestBidAmount,
                 Bids = bids
             };
         }

@@ -21,7 +21,7 @@ namespace AuctionSystem.Persistence.Repositories
 
         public async Task<List<Auction>> GetAllAuctionsAsync(CancellationToken cancellationToken)
         {
-            return await _context.Auctions.ToListAsync(cancellationToken);
+            return await _context.Auctions.Where(a => !a.IsPaidOut).ToListAsync(cancellationToken);
         }
 
         public async Task<int> CreateAuctionAsync(Auction auction, CancellationToken cancellationToken)
@@ -50,14 +50,14 @@ namespace AuctionSystem.Persistence.Repositories
         public async Task<List<Auction>> GetUnpaidEndedAuctionsAsync(CancellationToken cancellationToken)
         {
             return await _context.Auctions
-                .Where(a => !a.IsPaidOut && a.EndDate <= DateTime.UtcNow)
+                .Where(a => !a.IsPaidOut && a.EndDate.Date <= DateTime.Now.Date)
                 .ToListAsync(cancellationToken);
         }
 
         public async Task<DateTime?> GetNextUnpaidAuctionEndDateAsync(CancellationToken cancellationToken)
         {
             return await _context.Auctions
-                .Where(a => !a.IsPaidOut && a.EndDate > DateTime.UtcNow)
+                .Where(a => !a.IsPaidOut && a.EndDate.Date > DateTime.Now.Date)
                 .OrderBy(a => a.EndDate)
                 .Select(a => (DateTime?)a.EndDate)
                 .FirstOrDefaultAsync(cancellationToken);

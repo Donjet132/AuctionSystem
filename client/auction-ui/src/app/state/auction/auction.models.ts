@@ -65,6 +65,7 @@ export interface BidDto {
 }
 
 export interface AuctionDetailsDto {
+  id: number;
   title: string;
   description: string;
   startDate: Date;
@@ -73,6 +74,7 @@ export interface AuctionDetailsDto {
   winnerName: string | null;
   isSeller: boolean;
   bids: BidDto[];
+  highestBid?: number;
 }
 
 export enum AuctionActionType {
