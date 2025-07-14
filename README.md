@@ -68,23 +68,25 @@ To run this project locally, follow these steps:
    
 3. **Set up the database**:
 
-  Open AuctionSystemDb.sql in SQL Server Management Studio.
-  
-  Execute it to create the database.
-  
-  Then open WebAPI/appsettings.json and update the connection string:
-  "ConnectionStrings": {
-    "DefaultConnection": "Server=YOUR_SERVER;Database=AuctionSystemDb;Trusted_Connection=True;"
-  }
-  Run migrations:
-  bash
-  dotnet ef database update
+    - Open AuctionSystemDb.sql in SQL Server Management Studio.
+     
+    - Execute it to create the database.
+     
+    - Then open WebAPI/appsettings.json and update the connection string:
+        "ConnectionStrings": {
+          "DefaultConnection": "Server=YOUR_SERVER;Database=AuctionSystemDb;Trusted_Connection=True;"
+        }
+    - Run migrations:
+     ```bash
+     dotnet ef database update
 
-  4. **Run the backend**:
+4. **Run the backend**:
+```bash
   cd src\AuctionSystem.API
   dotnet run
 
- 5. **Run the frontend**:
+5. **Run the frontend**:
+```bash
   cd auction-ui
   npm install
   ng serve
