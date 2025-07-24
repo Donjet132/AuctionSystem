@@ -47,7 +47,6 @@ export class AuthEffects {
         tap(({ token, user }) => {
           localStorage.setItem('token', token);
           localStorage.setItem('user', JSON.stringify(user));
-          this.router.navigate(['/']);
         })
       ),
     { dispatch: false }
