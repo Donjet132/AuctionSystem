@@ -1,8 +1,10 @@
-﻿using System.Security.Claims;
+﻿using System.Security.Authentication;
+using System.Security.Claims;
 using AuctionSystem.Application.Users.Commands;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using static AuctionSystem.Application.Users.Commands.RegisterUserCommandHandler;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -23,9 +25,14 @@ public class AuthController : ControllerBase
             var result = await _mediator.Send(command);
             return Ok(result);
         }
-        catch (Exception ex)
+        catch (AuthenticationException ex)
         {
             return Unauthorized(new { message = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            //_logger.LogError(ex, "Unexpected error during login for user: {Username}", command.Username);
+            return Unauthorized(new { message = "Authentication failed. Please try again." });
         }
     }
 
@@ -37,9 +44,14 @@ public class AuthController : ControllerBase
             await _mediator.Send(command);
             return Ok(new { message = "User registered successfully" });
         }
-        catch (Exception ex)
+        catch (RegistrationException ex)
         {
             return BadRequest(new { message = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            //_logger.LogError(ex, "Unexpected error during registration for username: {Username}", command.Username);
+            return BadRequest(new { message = "Registration failed. Please try again." });
         }
     }
 

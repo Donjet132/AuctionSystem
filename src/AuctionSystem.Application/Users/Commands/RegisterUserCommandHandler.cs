@@ -12,10 +12,15 @@ namespace AuctionSystem.Application.Users.Commands
             _userRepository = userRepository;
         }
 
+        public class RegistrationException : Exception
+        {
+            public RegistrationException(string message) : base(message) { }
+        }
+
         public async Task<int> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
         {
             if (await _userRepository.UsernameExistsAsync(request.Username, cancellationToken))
-                throw new Exception("Username already taken.");
+                throw new RegistrationException("Username already taken.");
 
             string passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
 

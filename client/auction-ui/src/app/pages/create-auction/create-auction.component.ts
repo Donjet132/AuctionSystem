@@ -194,6 +194,15 @@ export class CreateAuctionComponent implements OnInit, OnDestroy {
   onSubmit() {
     if (this.auctionForm.valid) {
       const auction: Auction = this.auctionForm.value;
+      
+      if (auction.startDate) {
+        auction.startDate = this.toUtcDateOnly(auction.startDate);
+      }
+
+      if (auction.endDate) {
+        auction.endDate = this.toUtcDateOnly(auction.endDate);
+      }
+
       this.store.dispatch(AuctionActions.createAuction({ auction }));
     } else {
       this.auctionForm.markAllAsTouched();
@@ -203,5 +212,15 @@ export class CreateAuctionComponent implements OnInit, OnDestroy {
   onReset() {
     this.auctionForm.reset();
     this.auctionForm.markAsUntouched();
+  }
+
+  toUtcDateOnly(date: Date | string): string {
+    const localDate = new Date(date);
+    const utcDate = new Date(Date.UTC(
+      localDate.getFullYear(),
+      localDate.getMonth(),
+      localDate.getDate()
+    ));
+    return utcDate.toISOString();
   }
 }

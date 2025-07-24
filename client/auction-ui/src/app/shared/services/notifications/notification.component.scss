@@ -60,3 +60,21 @@
 .notification-info {
   background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
 }
+
+.mat-mdc-snack-bar-container {
+  background: transparent !important;
+  
+  .mat-mdc-snack-bar-surface {
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+  
+  .mat-mdc-snack-bar-label {
+    background: transparent !important;
+  }
+}
+
+.mdc-snackbar__surface {
+  background: transparent !important;
+  box-shadow: none !important;
+}

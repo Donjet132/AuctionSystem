@@ -4,6 +4,7 @@ import { of } from 'rxjs';
 import { map, mergeMap, catchError } from 'rxjs/operators';
 import { BidService } from '../../services/bid.service';
 import * as BidActions from './bid.actions';
+import { HttpErrorResponse } from '@angular/common/http';
 
 export interface PlaceBidResponse {
   success: boolean;
@@ -30,9 +31,9 @@ export class BidEffects {
               bidId: response.bidId
             })
           ),
-          catchError(error => 
+          catchError((error: HttpErrorResponse) => 
             of(BidActions.placeBidFailure({ 
-              error: error.message || 'Failed to place bid'
+              error: error.error?.message || error?.message || 'Failed to place bid'
             }))
           )
         )

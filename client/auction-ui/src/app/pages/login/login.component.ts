@@ -60,6 +60,8 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.store.dispatch(AuthActions.clearAuthError());
+
     // Subscribe to auth state changes
     this.store.select(selectAuthState).pipe(
       takeUntil(this.destroy$)

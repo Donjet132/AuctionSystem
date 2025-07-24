@@ -23,6 +23,5 @@
   <!-- Empty State -->
   <div class="empty-state" *ngIf="(auctions$ | async)?.length === 0">
     <p>No auctions available.</p>
-    <a mat-raised-button color="primary" routerLink="/create-auction">Create Auction</a>
   </div>
 </div>

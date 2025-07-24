@@ -3,6 +3,7 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import * as AuctionActions from './auction.actions';
 import { AuctionService } from '../../services/auction.service';
 import { catchError, map, mergeMap, of } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Injectable()
 export class AuctionEffects {
@@ -17,7 +18,7 @@ export class AuctionEffects {
       mergeMap(() =>
         this.auctionService.getAuctions().pipe(
           map((auctions) => AuctionActions.loadAuctionsSuccess({ auctions })),
-          catchError((error) => of(AuctionActions.loadAuctionsFailure({ error: error.message || 'Load auctions failed' })))
+          catchError((error: HttpErrorResponse) => of(AuctionActions.loadAuctionsFailure({ error: error.error?.message || error?.message || 'Load auctions failed' })))
         )
       )
     )
@@ -32,7 +33,7 @@ export class AuctionEffects {
             const createdAuction = { ...auction, id };
             return AuctionActions.createAuctionSuccess({ auction: createdAuction });
           }),
-          catchError((error) => of(AuctionActions.createAuctionFailure({ error: error.message || 'Create auction failed' })))
+          catchError((error: HttpErrorResponse) => of(AuctionActions.createAuctionFailure({ error: error.error?.message || error?.message || 'Create auction failed' })))
         )
       )
     )
@@ -44,8 +45,8 @@ export class AuctionEffects {
       mergeMap(action =>
         this.auctionService.getAuctionDetails(action.auctionId).pipe(
           map(auctionDetails => AuctionActions.loadAuctionDetailsSuccess({ auctionDetails })),
-          catchError(error => of(AuctionActions.loadAuctionDetailsFailure({ 
-            error: error.message || 'Failed to load auction details' 
+          catchError((error: HttpErrorResponse) => of(AuctionActions.loadAuctionDetailsFailure({ 
+            error: error.error?.message || error?.message || 'Failed to load auction details' 
           })))
         )
       )

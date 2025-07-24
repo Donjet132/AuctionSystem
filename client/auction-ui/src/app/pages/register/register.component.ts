@@ -62,6 +62,8 @@ export class RegisterComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.store.dispatch(AuthActions.clearAuthError());
+
     // Subscribe to auth state changes
     this.store.select(selectAuthState).pipe(
       takeUntil(this.destroy$)
@@ -89,15 +91,19 @@ export class RegisterComponent implements OnInit, OnDestroy {
   }
 
   // Custom validator to check if passwords match
-  passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
-    const password = control.get('password');
-    const confirmPassword = control.get('confirmPassword');
-    
-    if (!password || !confirmPassword) {
-      return null;
+  passwordMatchValidator(formGroup: AbstractControl): ValidationErrors | null {
+    const password = formGroup.get('password');
+    const confirmPassword = formGroup.get('confirmPassword');
+
+    if (password && confirmPassword && password.value !== confirmPassword.value) {
+      confirmPassword.setErrors({ passwordMismatch: true });
+    } else {
+      if (confirmPassword?.hasError('passwordMismatch')) {
+        confirmPassword.setErrors(null);
+      }
     }
-    
-    return password.value === confirmPassword.value ? null : { passwordMismatch: true };
+
+    return null;
   }
 
   // Prevent paste on confirm password field
@@ -135,11 +141,10 @@ export class RegisterComponent implements OnInit, OnDestroy {
   // Get error message for confirm password
   getConfirmPasswordErrorMessage(): string {
     const control = this.registerForm.get('confirmPassword');
-    console.log(control?.errors);
     if (control?.hasError('required')) {
       return 'Please confirm your password';
     }
-    if (this.registerForm.hasError('passwordMismatch')) {
+    if (control?.hasError('passwordMismatch')) {
       return 'Passwords do not match';
     }
     return '';

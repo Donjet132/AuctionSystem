@@ -5,6 +5,7 @@ import * as AuthActions from './auth.actions';
 import { catchError, map, mergeMap, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { Router } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Injectable()
 export class AuthEffects {
@@ -18,8 +19,8 @@ export class AuthEffects {
       mergeMap(({ username, password }) =>
         this.authService.login(username, password).pipe(
           map((res) => AuthActions.loginSuccess({ user: res.user, token: res.token })),
-          catchError((error) =>
-            of(AuthActions.loginFailure({ error: error.message || 'Login failed' }))
+          catchError((error: HttpErrorResponse) =>
+            of(AuthActions.loginFailure({ error: error.error?.message || error?.message || 'Login failed' }))
           )
         )
       )
@@ -33,7 +34,7 @@ export class AuthEffects {
       mergeMap(({ username, password }) =>
         this.authService.register(username, password).pipe(
           map(() => AuthActions.registerSuccess()),
-          catchError((error) => of(AuthActions.registerFailure({ error: error.message || 'Register failed' })))
+          catchError((error: HttpErrorResponse) => of(AuthActions.registerFailure({ error: error.error?.message || error?.message || 'Register failed' })))
         )
       )
     )
