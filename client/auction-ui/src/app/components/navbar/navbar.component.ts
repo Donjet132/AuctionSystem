@@ -42,11 +42,11 @@ export class NavbarComponent implements OnInit {
   ngOnInit(): void {}
 
   navigateToAuctions(): void {
-    this.router.navigate(['/auctions']);
+    this.router.navigate(['/']);
   }
 
   navigateToUserDetails(): void {
-    this.router.navigate(['/user-details']);
+    this.router.navigate(['/profile']);
   }
 
   logout(): void {

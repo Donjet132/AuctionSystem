@@ -60,9 +60,29 @@ export const authReducer = createReducer(
     ...initialState,
     lastAction: 'logout' as const
   })),
+
   on(AuthActions.clearAuthError, (state) => ({
     ...state,
     error: null
+  })),
+
+  on(AuthActions.editUser, (state) => ({
+    ...state,
+    loading: true,
+    error: null,
+    lastAction: 'editUser' as const
+  })),
+
+  on(AuthActions.editUserSuccess, (state) => ({
+    ...state,
+    loading: false,
+    error: null
+  })),
+
+  on(AuthActions.editUserFailure, (state, { error }) => ({
+    ...state,
+    loading: false,
+    error
   }))
 );
 

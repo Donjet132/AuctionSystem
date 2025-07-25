@@ -73,7 +73,7 @@ export class LoginComponent implements OnInit, OnDestroy {
       if (wasLoading && !authState.loading && !authState.error && authState.user) {
         this.notificationService.success('Login successful! Welcome back.');
         this.loginForm.reset();
-        this.router.navigate(['/dashboard']); // or wherever you want to redirect after login
+        this.router.navigate(['/']);
       }
       
       // Handle error

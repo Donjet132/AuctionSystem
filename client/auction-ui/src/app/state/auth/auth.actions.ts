@@ -16,3 +16,9 @@ export const logout = createAction('[Auth] Logout');
 
 // Clear Auth Error
 export const clearAuthError = createAction('[Auth] Clear Error');
+
+
+// Edit User
+export const editUser = createAction('[User] Edit User', props<{ user: Partial<User> }>());
+export const editUserSuccess = createAction('[User] Edit User Success', props<{ message: string }>());
+export const editUserFailure = createAction('[User] Edit User Failure', props<{ error: string }>());

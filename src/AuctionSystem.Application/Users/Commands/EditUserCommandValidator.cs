@@ -7,9 +7,12 @@ namespace AuctionSystem.Application.Users.Commands
     {
         public EditUserCommandValidator()
         {
-            RuleFor(x => x.Username)
-                .NotEmpty()
-                .Length(4, 20);
+            When(x => !string.IsNullOrWhiteSpace(x.Username), () =>
+            {
+                RuleFor(x => x.Username)
+                    .NotEmpty()
+                    .Length(4, 20);
+            });
 
             When(x => !string.IsNullOrWhiteSpace(x.NewPassword), () =>
             {

@@ -160,7 +160,7 @@ export class CreateAuctionComponent implements OnInit, OnDestroy {
         this.notificationService.success('Auction created successfully!');
         this.auctionForm.reset();
         this.auctionForm.markAsUntouched();
-        this.router.navigate(['/auctions']);
+        this.router.navigate(['/']);
       }
       
       // Handle error

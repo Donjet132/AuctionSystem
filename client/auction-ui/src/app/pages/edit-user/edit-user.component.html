@@ -1,0 +1,125 @@
+<div class="edit-user-container">
+  <mat-card class="edit-user-card">
+    <mat-card-header>
+      <mat-card-title>
+        <mat-icon>person</mat-icon>
+        Edit Profile
+      </mat-card-title>
+    </mat-card-header>
+    
+    <mat-card-content>
+      <!-- Wallet Amount Display (Read-only) -->
+      <div class="wallet-section">
+        <h3 class="wallet-title">
+          <mat-icon>account_balance_wallet</mat-icon>
+          Wallet Information
+        </h3>
+        <div class="wallet-amount">
+          <span class="wallet-label">Current Balance:</span>
+          <span class="wallet-value">${{ currentUser?.walletAmount || 0 | number:'1.2-2' }}</span>
+        </div>
+      </div>
+
+      <mat-divider></mat-divider>
+
+      <!-- Edit Form -->
+      <form [formGroup]="editUserForm" (ngSubmit)="onSubmit()" class="edit-form">
+        <h3 class="form-title">
+          <mat-icon>edit</mat-icon>
+          Update Account Details
+        </h3>
+
+        <!-- Username Field -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Username</mat-label>
+          <input
+            matInput
+            formControlName="username"
+            placeholder="Enter your username"
+            [class.error]="hasError('username')"
+          >
+          <mat-icon matSuffix>person</mat-icon>
+          <mat-error *ngIf="hasError('username')">
+            {{ getErrorMessage('username') }}
+          </mat-error>
+        </mat-form-field>
+
+        <!-- Current Password Field -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Current Password</mat-label>
+          <input
+            matInput
+            [type]="hideOldPassword ? 'password' : 'text'"
+            formControlName="oldPassword"
+            placeholder="Enter your current password"
+            [class.error]="hasError('oldPassword')"
+          >
+          <button
+            mat-icon-button
+            matSuffix
+            type="button"
+            (click)="hideOldPassword = !hideOldPassword"
+            [attr.aria-label]="'Hide password'"
+            [attr.aria-pressed]="hideOldPassword"
+          >
+            <mat-icon>{{hideOldPassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+          </button>
+          <mat-error *ngIf="hasError('oldPassword')">
+            {{ getErrorMessage('oldPassword') }}
+          </mat-error>
+        </mat-form-field>
+
+        <!-- New Password Field -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>New Password</mat-label>
+          <input
+            matInput
+            [type]="hideNewPassword ? 'password' : 'text'"
+            formControlName="newPassword"
+            placeholder="Enter your new password"
+            [class.error]="hasError('newPassword')"
+          >
+          <button
+            mat-icon-button
+            matSuffix
+            type="button"
+            (click)="hideNewPassword = !hideNewPassword"
+            [attr.aria-label]="'Hide password'"
+            [attr.aria-pressed]="hideNewPassword"
+          >
+            <mat-icon>{{hideNewPassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+          </button>
+          <mat-error *ngIf="hasError('newPassword')">
+            {{ getErrorMessage('newPassword') }}
+          </mat-error>
+        </mat-form-field>
+
+        <!-- Action Buttons -->
+        <div class="form-actions">
+          <button
+            mat-raised-button
+            color="primary"
+            type="submit"
+            [disabled]="!hasChanges() || isLoading"
+            class="submit-button"
+          >
+            <mat-icon *ngIf="!isLoading">save</mat-icon>
+            <mat-icon *ngIf="isLoading" class="loading-icon">refresh</mat-icon>
+            {{ isLoading ? 'Updating...' : 'Update Profile' }}
+          </button>
+
+          <button
+            mat-stroked-button
+            type="button"
+            (click)="onCancel()"
+            [disabled]="isLoading"
+            class="cancel-button"
+          >
+            <mat-icon>cancel</mat-icon>
+            Cancel
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

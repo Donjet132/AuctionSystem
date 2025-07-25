@@ -4,6 +4,7 @@ using AuctionSystem.Application.Users.Commands;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using static AuctionSystem.Application.Users.Commands.EditUserCommandHandler;
 using static AuctionSystem.Application.Users.Commands.RegisterUserCommandHandler;
 
 [ApiController]
@@ -70,9 +71,14 @@ public class AuthController : ControllerBase
 
             return Ok(new { message = "User updated successfully" });
         }
-        catch (Exception ex)
+        catch (EditUserException ex)
         {
             return BadRequest(new { message = ex.Message });
+        }
+        catch (Exception)
+        {
+            //_logger.LogError(ex, "Unexpected error during update for username: {Username}", command.Username);
+            return BadRequest(new { message = "User update failed. Please try again." });
         }
     }
 

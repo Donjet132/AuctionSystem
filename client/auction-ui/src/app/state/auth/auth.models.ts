@@ -3,7 +3,7 @@ export interface AuthState {
   token: string | null;
   loading: boolean;
   error: string | null;
-  lastAction?: 'login' | 'register' | 'logout' | null;
+  lastAction?: 'login' | 'register' | 'logout' | 'editUser' | null;
   loginAttempts?: number;
 }
 
@@ -11,6 +11,8 @@ export interface User {
   id: number;
   username: string;
   walletAmount: number;
+  currentPassword?: string;
+  newPassword?: string;
 }
 export interface LoginRequest {
   username: string;

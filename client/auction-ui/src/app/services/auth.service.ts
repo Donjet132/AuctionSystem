@@ -38,4 +38,8 @@ export class AuthService {
   logout(): Observable<void> {
     return this.http.post<void>(`${this.baseUrl}/logout`, {});
   }
+
+  editUser(user: Partial<User>): Observable<{ message: string }> {
+    return this.http.put<{ message: string }>(`${this.baseUrl}/edit`, user);
+  }
 }

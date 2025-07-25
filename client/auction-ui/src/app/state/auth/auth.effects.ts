@@ -83,4 +83,27 @@ export class AuthEffects {
       ),
     { dispatch: false }
   );
+
+  editUser$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AuthActions.editUser),
+      mergeMap(({ user }) =>
+        this.authService.editUser(user).pipe(
+          map(res => AuthActions.editUserSuccess({ message: res.message })),
+          catchError((error: HttpErrorResponse) =>
+            of(AuthActions.editUserFailure({
+              error: error.error?.message || error.message || 'Failed to update user'
+            }))
+          )
+        )
+      )
+    )
+  );
+
+  editUserSuccessRedirect$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AuthActions.editUserSuccess),
+      map(() => AuthActions.logout())
+    )
+  );
 }
