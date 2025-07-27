@@ -20,30 +20,45 @@ namespace AuctionSystem.Application.Bids.Commands
             _userRepository = userRepository;
         }
 
+        public class NotFoundException : Exception
+        {
+            public NotFoundException(string message) : base(message) { }
+        }
+
+        public class UnauthorizedBidException : UnauthorizedAccessException
+        {
+            public UnauthorizedBidException(string message) : base(message) { }
+        }
+
+        public class BadRequestException : Exception
+        {
+            public BadRequestException(string message) : base(message) { }
+        }
+
         public async Task<int> Handle(PlaceBidCommand request, CancellationToken cancellationToken)
         {
             var auction = await _auctionRepository.GetAuctionByIdAsync(request.AuctionId, cancellationToken);
             if (auction == null)
-                throw new Exception("Auction not found.");
+                throw new NotFoundException("Auction not found.");
 
             if (auction.SellerId == request.BidderId)
-                throw new UnauthorizedAccessException("You cannot bid on your own auction.");
+                throw new UnauthorizedBidException("You cannot bid on your own auction.");
 
             if (auction.EndDate <= DateTime.UtcNow)
-                throw new Exception("Auction has already ended.");
+                throw new BadRequestException("Auction has already ended.");
 
             var user = await _userRepository.GetUserByIdAsync(request.BidderId, cancellationToken);
             if (user == null)
-                throw new Exception("Bidder not found.");
+                throw new NotFoundException("Bidder not found.");
 
             if (user.WalletAmount < request.Amount)
-                throw new Exception("Insufficient funds.");
+                throw new BadRequestException("Insufficient funds.");
 
             var currentBids = await _bidRepository.GetBidsByAuctionIdAsync(request.AuctionId, cancellationToken);
             var highestBid = currentBids.OrderByDescending(b => b.Amount).FirstOrDefault()?.Amount ?? auction.StartPrice;
 
             if (request.Amount <= highestBid)
-                throw new Exception($"Bid must be greater than current highest bid: {highestBid}");
+                throw new BadRequestException($"Bid must be greater than current highest bid: {highestBid}");
 
             var bid = new Bid
             {

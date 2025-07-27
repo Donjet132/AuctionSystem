@@ -12,30 +12,49 @@ namespace AuctionSystem.API.Controllers
     public class AuctionsController : ControllerBase
     {
         private readonly IMediator _mediator;
+        private readonly ILogger<AuctionsController> _logger;
 
-        public AuctionsController(IMediator mediator)
+        public AuctionsController(IMediator mediator, ILogger<AuctionsController> logger)
         {
             _mediator = mediator;
+            _logger = logger;
         }
 
         [HttpGet]
         [Authorize]
         public async Task<IActionResult> GetAll()
         {
-            var result = await _mediator.Send(new GetAllAuctionsQuery());
-            return Ok(result);
+            try
+            {
+                var result = await _mediator.Send(new GetAllAuctionsQuery());
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unexpected error while retrieving all auctions.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "An unexpected error occurred.");
+            }
         }
 
         [HttpGet("{id}")]
         [Authorize]
         public async Task<IActionResult> GetById(int id)
         {
-            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
-            var result = await _mediator.Send(new GetAuctionByIdQuery(id, userId));
-            if (result == null)
-                return NotFound();
-            return Ok(result);
+            try
+            {
+                var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+                var result = await _mediator.Send(new GetAuctionByIdQuery(id, userId));
+                if (result == null)
+                    return NotFound();
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unexpected error while retrieving auction with ID {AuctionId} for user {UserId}.", id, User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+                return StatusCode(StatusCodes.Status500InternalServerError, "An unexpected error occurred.");
+            }
         }
+
 
         [HttpPost]
         [Authorize]
@@ -51,7 +70,8 @@ namespace AuctionSystem.API.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new { message = ex.Message });
+                _logger.LogError(ex, "Error occurred while creating auction for seller ID {SellerId}", command.SellerId);
+                return BadRequest(new { message = "Failed to create auction." });
             }
         }
 
@@ -75,7 +95,8 @@ namespace AuctionSystem.API.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new { message = ex.Message });
+                _logger.LogError(ex, "Error occurred while editing auction with ID {AuctionId} by seller ID {SellerId}", id, command.SellerId);
+                return BadRequest(new { message = "Failed to edit auction." });
             }
         }
 
@@ -101,7 +122,9 @@ namespace AuctionSystem.API.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new { message = ex.Message });
+                _logger.LogError(ex, "Error occurred while deleting auction with ID {AuctionId} by seller ID {SellerId}", id,
+                    User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+                return BadRequest(new { message = "Failed to delete auction." });
             }
         }
     }

@@ -1,5 +1,6 @@
 ﻿using System.Security.Authentication;
 using System.Security.Claims;
+using AuctionSystem.API.Controllers;
 using AuctionSystem.Application.Users.Commands;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -12,10 +13,12 @@ using static AuctionSystem.Application.Users.Commands.RegisterUserCommandHandler
 public class AuthController : ControllerBase
 {
     private readonly IMediator _mediator;
+    private readonly ILogger<AuthController> _logger;
 
-    public AuthController(IMediator mediator)
+    public AuthController(IMediator mediator, ILogger<AuthController> logger)
     {
         _mediator = mediator;
+        _logger = logger;
     }
 
     [HttpPost("login")]
@@ -32,7 +35,7 @@ public class AuthController : ControllerBase
         }
         catch (Exception ex)
         {
-            //_logger.LogError(ex, "Unexpected error during login for user: {Username}", command.Username);
+            _logger.LogError(ex, "Unexpected error during login for user: {Username}", command.Username);
             return Unauthorized(new { message = "Authentication failed. Please try again." });
         }
     }
@@ -51,7 +54,7 @@ public class AuthController : ControllerBase
         }
         catch (Exception ex)
         {
-            //_logger.LogError(ex, "Unexpected error during registration for username: {Username}", command.Username);
+            _logger.LogError(ex, "Unexpected error during registration for username: {Username}", command.Username);
             return BadRequest(new { message = "Registration failed. Please try again." });
         }
     }
@@ -75,9 +78,9 @@ public class AuthController : ControllerBase
         {
             return BadRequest(new { message = ex.Message });
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            //_logger.LogError(ex, "Unexpected error during update for username: {Username}", command.Username);
+            _logger.LogError(ex, "Unexpected error during update for username: {Username}", command.Username);
             return BadRequest(new { message = "User update failed. Please try again." });
         }
     }

@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using MediatR;
+using Microsoft.Extensions.Logging;
 
 namespace AuctionSystem.Application.Common.Behaviors
 {
@@ -7,10 +8,12 @@ namespace AuctionSystem.Application.Common.Behaviors
     where TRequest : IRequest<TResponse>
     {
         private readonly IEnumerable<IValidator<TRequest>> _validators;
+        private readonly ILogger<ValidationBehavior<TRequest, TResponse>> _logger;
 
-        public ValidationBehavior(IEnumerable<IValidator<TRequest>> validators)
+        public ValidationBehavior(IEnumerable<IValidator<TRequest>> validators, ILogger<ValidationBehavior<TRequest, TResponse>> logger)
         {
             _validators = validators;
+            _logger = logger;
         }
 
         public async Task<TResponse> Handle(
@@ -31,7 +34,14 @@ namespace AuctionSystem.Application.Common.Behaviors
                     .ToList();
 
                 if (failures.Count != 0)
+                {
+                    _logger.LogWarning(
+                        "Validation failed for {RequestType} with errors: {@ValidationErrors}",
+                        typeof(TRequest).Name,
+                        failures.Select(f => new { f.PropertyName, f.ErrorMessage }));
+
                     throw new ValidationException(failures);
+                }
             }
 
             return await next();
