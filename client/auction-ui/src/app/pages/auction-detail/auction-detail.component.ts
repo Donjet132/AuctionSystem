@@ -6,6 +6,8 @@ import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { BidModalService } from '../../services/bid-modal.service';
 import * as BidActions from '../../state/bid/bid.actions';
+import { selectBidState } from '../../state/bid/bid.selectors';
+import { BidState } from '../../state/bid/bid.models';
 
 // Angular Material Imports
 import { MatCardModule } from '@angular/material/card';
@@ -20,6 +22,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { BidDto, AuctionDetailsDto } from '../../state/auction/auction.models';
 import { loadAuctionDetails } from '../../state/auction/auction.actions';
 import { selectAuctionDetails, selectAuctionLoading, selectAuctionError } from '../../state/auction/auction.selectors';
+import { NotificationService } from '../../shared/services/notifications/notification.service';
 
 @Component({
   selector: 'app-auction-detail',
@@ -47,11 +50,15 @@ export class AuctionDetailComponent implements OnInit, OnDestroy {
   auctionDetails$: Observable<AuctionDetailsDto | null>;
   loading$: Observable<boolean>;
   error$: Observable<string | null>;
+  isPlacingBid: boolean = false;
 
   displayedColumns: string[] = ['bidderName', 'amount', 'timePlaced'];
   displayedColumnsForBuyer: string[] = ['amount', 'timePlaced'];
 
-  constructor(private bidModalService: BidModalService) {
+  constructor(
+    private bidModalService: BidModalService,
+    private notificationService: NotificationService
+  ) {
     this.auctionDetails$ = this.store.select(selectAuctionDetails);
     this.loading$ = this.store.select(selectAuctionLoading);
     this.error$ = this.store.select(selectAuctionError);
@@ -60,10 +67,31 @@ export class AuctionDetailComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.route.params.pipe(takeUntil(this.destroy$)).subscribe(params => {
       const auctionId = params['id'];
-      if (auctionId) {
-        // Dispatch action to load auction details
-        // You'll need to create this action in your auction actions
-        this.store.dispatch(loadAuctionDetails({ auctionId: +auctionId }));
+      this.loadAuctionDetails(auctionId);
+    });
+
+    this.selectAuctionState();
+  }
+
+  loadAuctionDetails(auctionId: number) {
+    if (auctionId) {
+      this.store.dispatch(loadAuctionDetails({ auctionId: +auctionId }));
+    }
+  }
+
+  selectAuctionState(): void{
+    this.store.select(selectBidState).pipe(
+      takeUntil(this.destroy$)
+    ).subscribe((bidState: BidState) => {
+      const wasLoading = this.isPlacingBid;
+      this.isPlacingBid = bidState.loading;
+
+      if (wasLoading && !bidState.loading && !bidState.error) {
+        this.notificationService.success('Bid placed successfully!');
+      }
+
+      if (bidState.error && !bidState.loading) {
+        this.notificationService.error(bidState.error);
       }
     });
   }
@@ -124,17 +152,16 @@ export class AuctionDetailComponent implements OnInit, OnDestroy {
     }).format(new Date(date));
   }
 
-onPlaceBid(auction: AuctionDetailsDto) {
-  this.bidModalService.openBidModal(auction).subscribe(result => {
-    if (result?.success) {
-      this.store.dispatch(BidActions.placeBid({
-        auctionId: auction.id,
-        amount: result.amount
-      }));
-      
-    } else {
-      console.log('Bid placement cancelled or failed');
-    }
-  });
-}
+  onPlaceBid(auction: AuctionDetailsDto) {
+    this.bidModalService.openBidModal(auction).subscribe(result => {
+      if (result?.success) {
+        this.store.dispatch(BidActions.placeBid({
+          auctionId: auction.id,
+          amount: result.amount
+        }));
+      } else {
+        console.log('Bid placement cancelled or failed');
+      }
+    });
+  }
 }

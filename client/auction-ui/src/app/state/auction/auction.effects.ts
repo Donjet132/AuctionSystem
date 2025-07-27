@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import * as AuctionActions from './auction.actions';
+import { placeBidSuccess } from '../bid/bid.actions';
 import { AuctionService } from '../../services/auction.service';
 import { catchError, map, mergeMap, of } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -50,6 +51,13 @@ export class AuctionEffects {
           })))
         )
       )
+    )
+  );
+
+  refreshAuctionAfterBid$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(placeBidSuccess),
+      map(action => AuctionActions.loadAuctionDetails({ auctionId: action.auctionId }))
     )
   );
 }

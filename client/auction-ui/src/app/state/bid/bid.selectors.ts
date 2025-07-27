@@ -1,18 +1,5 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
-
-export interface BidState {
-  loading: boolean;
-  error: string | null;
-  success: boolean;
-  currentBid: {
-    auctionId: string;
-    amount: number;
-    bidId: string;
-  } | null;
-  auctionBids: {
-    [auctionId: string]: any[];
-  };
-}
+import { BidState } from './bid.models';
 
 export const selectBidState = createFeatureSelector<BidState>('bid');
 
