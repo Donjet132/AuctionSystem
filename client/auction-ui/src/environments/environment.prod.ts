@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://production-backend-url/api'
+  apiUrl: 'auction-ahhth4akffgnenhd.northeurope-01.azurewebsites.net/api'
 };
