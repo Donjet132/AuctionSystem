@@ -4,10 +4,14 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'client/auction-ui/**'
   pull_request:
     types: [opened, synchronize, reopened, closed]
     branches:
       - main
+    paths:
+      - 'client/auction-ui/**'
 
 jobs:
   build_and_deploy_job:
@@ -40,3 +44,4 @@ jobs:
           app_location: "client/auction-ui"
           api_location: ""
           output_location: "dist/auction-ui/browser"
+
