@@ -1,4 +1,4 @@
-# 🧾 Auction System
+# Auction System
 
 A modern, full-stack Auction Management System built with **.NET 8 (Clean Architecture)**, **Angular 19 (Standalone APIs + NgRx)**, and **SQL Server**.
 
@@ -6,7 +6,7 @@ This application enables users to register, manage auctions, and place bids with
 
 ---
 
-## 📦 Tech Stack
+## Tech Stack
 
 | Layer       | Technology / Tools                           |
 |-------------|-----------------------------------------------|
@@ -19,9 +19,9 @@ This application enables users to register, manage auctions, and place bids with
 
 ---
 
-## 🧠 Architecture Overview
+## Architecture Overview
 
-### ✅ Backend: Clean Architecture
+### Backend: Clean Architecture
 
 - **Application Layer**: Business logic, MediatR commands/queries
 - **Domain Layer**: Entities, enums, core logic
@@ -31,7 +31,7 @@ This application enables users to register, manage auctions, and place bids with
 > Uses **MediatR** for CQRS (Command Query Responsibility Segregation)  
 > Integrated **FluentValidation**, **Entity Framework Core**
 
-### ✅ Frontend: Angular 19
+### Frontend: Angular 19
 
 - Built with **Standalone APIs** and **NgRx** for state management
 - Material UI components
@@ -40,15 +40,15 @@ This application enables users to register, manage auctions, and place bids with
 
 ---
 
-## 🚀 Features
+## Features
 
-- 🔐 JWT-based authentication & role-based access (Seller, Bidder)
-- 📤 Auction creation and management (by Sellers)
-- 💰 Real-time (manual refresh) bidding with highest bid tracking
-- ✅ Client-side and server-side validation
-- 🧼 Clean code and scalable architecture
+- JWT-based authentication & role-based access (Seller, Bidder)
+- Auction creation and management (by Sellers)
+- Real-time (manual refresh) bidding with highest bid tracking
+- Client-side and server-side validation
+- Clean code and scalable architecture
 
-## ⚙️ Setup
+## Setup
 
 To run this project locally, follow these steps:
 
